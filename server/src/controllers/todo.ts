@@ -2,7 +2,7 @@
 import type { Request, Response } from "express";
 
 // CUSTOM
-import { Todo } from "../models/todo";
+import { Todo } from "../models/todo.js";
 
 // Creating todo
 

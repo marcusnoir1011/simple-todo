@@ -8,7 +8,7 @@ import {
     getTodo,
     updateTodo,
     deleteTodo,
-} from "../controllers/todo";
+} from "../controllers/todo.js";
 
 const router: Router = Router();
 

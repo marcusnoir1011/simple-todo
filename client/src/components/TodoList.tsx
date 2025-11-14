@@ -51,15 +51,13 @@ const TodoList = () => {
             return;
         }
 
-        if (editMode) {
-            if (editId) {
-                try {
-                    await updateTodo(editId, newTodo);
-                    setEditMode(false);
-                    setEditId(null);
-                } catch (err) {
-                    console.error("Failed to update todo: ", err);
-                }
+        if (editMode && editId) {
+            try {
+                await updateTodo(editId, newTodo);
+                setEditMode(false);
+                setEditId(null);
+            } catch (err) {
+                console.error("Failed to update todo: ", err);
             }
         } else if (editMode === false) {
             try {
@@ -68,6 +66,9 @@ const TodoList = () => {
                 console.error("Failed to create todo: ", err);
             }
         }
+
+        setNewTodo("");
+        refreshing();
     };
 
     return (
@@ -90,6 +91,7 @@ const TodoList = () => {
                 <ul>
                     {todoList.map((todo) => (
                         <TodoItem
+                            key={todo._id}
                             todo={todo}
                             editMode={editMode}
                             handleModeChange={handleModeChange}

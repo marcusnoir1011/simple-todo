@@ -4,7 +4,8 @@ import dotenv from "dotenv";
 import cors from "cors";
 
 // CUSTOM
-import { connectingDb } from "./config/db";
+import { connectingDb } from "./config/db.js";
+import todoRouter from "./routes/todo.js";
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use(
 app.use(express.json());
 
 // ROUTES
+app.use(todoRouter);
 
 app.listen(PORT, () => {
     connectingDb();

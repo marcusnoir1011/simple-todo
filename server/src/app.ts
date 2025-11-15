@@ -5,6 +5,7 @@ import cors from "cors";
 
 // CUSTOM
 import { connectingDb } from "./config/db.js";
+import userRouter from "./routes/user.js";
 import todoRouter from "./routes/todo.js";
 
 dotenv.config();
@@ -23,7 +24,8 @@ app.use(
 app.use(express.json());
 
 // ROUTES
-app.use(todoRouter);
+app.use("/api/auth", userRouter);
+app.use("api/todo", todoRouter);
 
 app.listen(PORT, () => {
     connectingDb();

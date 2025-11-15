@@ -8,13 +8,13 @@ import {
     getTodo,
     updateTodo,
     deleteTodo,
-} from "../controllers/todo";
+} from "../controllers/todo.js";
 
 const router: Router = Router();
 
 router.post("/create", createTodo);
-router.get("/allTodo", getAllTodo);
-router.get("/todo/:id", getTodo);
+router.get("/getAllTodo", getAllTodo);
+router.get("/get/:id", getTodo);
 router.put("/update/:id", updateTodo);
 router.delete("/delete/:id", deleteTodo);
 

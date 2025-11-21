@@ -5,6 +5,7 @@ import type { Request, Response, RequestHandler } from "express";
 import { User } from "../models/user.js";
 import generateToken from "../utils/generateToken.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import type { AuthRequest } from "../middlewares/authMiddleware.js";
 
 // REGISTER
 const userRegister: RequestHandler = asyncHandler(
@@ -71,13 +72,36 @@ const userLogout: RequestHandler = asyncHandler(
 );
 
 const getUserProfile: RequestHandler = asyncHandler(
-  async (req: Request, res: Response): Promise<void> => {
-    res.status(200).json({ message: "User Profile." });
+  async (req: AuthRequest, res: Response): Promise<void> => {
+    const user = {
+      _id: req.user?._id,
+      name: req.user?.name,
+      email: req.user?.email,
+    };
+    res.status(200).json({ user });
   }
 );
 
 const updateUserProfile: RequestHandler = asyncHandler(
-  async (req: Request, res: Response): Promise<void> => {}
+  async (req: AuthRequest, res: Response): Promise<void> => {
+    const user = await User.findById(req.user?._id);
+    if (!user) {
+      res.status(404);
+      throw new Error("User not found.");
+    }
+
+    user.name = req.body.name || user.name;
+    user.email = req.body.email || user.email;
+    user.password = req.body.password || user.password;
+    const updatedUser = await user.save();
+    const filteredResult = {
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+    };
+
+    res.status(200).json({ message: "Updated user profile.", filteredResult });
+  }
 );
 
 export {

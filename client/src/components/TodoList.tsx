@@ -2,106 +2,115 @@
 import { useEffect, useState } from "react";
 
 // CUSTOM
-import { createTodo, deleteTodo, getTodo, updateTodo } from "../services/todo";
+import {
+  createTodo,
+  deleteTodo,
+  getAllTodo,
+  updateTodo,
+} from "../services/todo";
 import { type Todo } from "../types/todo";
 import TodoItem from "./TodoItem";
 
 const TodoList = () => {
-    const [todoList, setTodoList] = useState<Todo[]>([]);
-    const [newTodo, setNewTodo] = useState("");
-    const [refresh, setRefresh] = useState(false);
-    const [editMode, setEditMode] = useState(false);
-    const [editId, setEditId] = useState<string | null>(null);
+  const [todoList, setTodoList] = useState<Todo[]>([]);
+  const [newTodo, setNewTodo] = useState("");
+  const [refresh, setRefresh] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editId, setEditId] = useState<string | null>(null);
 
-    useEffect(() => {
-        const fetchedTodos = async () => {
-            try {
-                const data = await getTodo();
-                setTodoList(data);
-            } catch (err) {
-                console.error("Failed to fetch Todo data: ", err);
-            }
-        };
-        fetchedTodos();
-    }, [refresh]);
-
-    const refreshing = () => {
-        setRefresh(!refresh);
+  useEffect(() => {
+    const fetchedTodos = async () => {
+      try {
+        const data = await getAllTodo();
+        setTodoList(data);
+      } catch (err) {
+        console.error("Failed to fetch Todo data: ", err);
+      }
     };
+    fetchedTodos();
+  }, [refresh]);
 
-    const handleRemoveTodo = async (id: string) => {
-        try {
-            await deleteTodo(id);
-            refreshing();
-        } catch (err) {
-            console.error("Failed to delete todo: ", err);
-        }
-    };
+  const refreshing = () => {
+    setRefresh(!refresh);
+  };
 
-    const handleModeChange = (todo: Todo) => {
-        setEditMode(true);
-        setNewTodo(todo.title);
-        setEditId(todo._id);
-    };
+  const handleRemoveTodo = async (id: string) => {
+    try {
+      await deleteTodo(id);
+      refreshing();
+    } catch (err) {
+      console.error("Failed to delete todo: ", err);
+    }
+  };
 
-    const handleFormSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+  const handleModeChange = (todo: Todo) => {
+    setEditMode(true);
+    setNewTodo(todo.title);
+    setEditId(todo._id);
+  };
 
-        if (newTodo.trim().length === 0) {
-            return;
-        }
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-        if (editMode && editId) {
-            try {
-                await updateTodo(editId, newTodo);
-                setEditMode(false);
-                setEditId(null);
-            } catch (err) {
-                console.error("Failed to update todo: ", err);
-            }
-        } else if (editMode === false) {
-            try {
-                await createTodo(newTodo);
-            } catch (err) {
-                console.error("Failed to create todo: ", err);
-            }
-        }
+    if (newTodo.trim().length === 0) {
+      return;
+    }
 
-        setNewTodo("");
-        refreshing();
-    };
+    if (editMode && editId) {
+      try {
+        await updateTodo(editId, newTodo);
+        setEditMode(false);
+        setEditId(null);
+      } catch (err) {
+        console.error("Failed to update todo: ", err);
+      }
+    } else if (editMode === false) {
+      try {
+        await createTodo(newTodo);
+      } catch (err) {
+        console.error("Failed to create todo: ", err);
+      }
+    }
 
-    return (
-        <>
-            <div>
-                <h1></h1>
+    setNewTodo("");
+    refreshing();
+  };
 
-                <form onSubmit={handleFormSubmit}>
-                    <input
-                        type="text"
-                        value={newTodo}
-                        onChange={(e) => setNewTodo(e.target.value)}
-                        placeholder={
-                            editMode ? "Update your todo..." : "Add new todo..."
-                        }
-                    />
-                    <button type="submit">{editMode ? "Update" : "Add"}</button>
-                </form>
+  return (
+    <>
+      <div>
+        <h1 className="text-xl font-bold mb-3">Share</h1>
 
-                <ul>
-                    {todoList.map((todo) => (
-                        <TodoItem
-                            key={todo._id}
-                            todo={todo}
-                            editMode={editMode}
-                            handleModeChange={handleModeChange}
-                            handleRemoveTodo={handleRemoveTodo}
-                        />
-                    ))}
-                </ul>
-            </div>
-        </>
-    );
+        <form onSubmit={handleFormSubmit} className="mb-6">
+          <input
+            type="text"
+            value={newTodo}
+            onChange={(e) => setNewTodo(e.target.value)}
+            placeholder={editMode ? "Update your todo..." : "Add new todo..."}
+            className="border rounded-sm p-2 mr-2 text-sm"
+          />
+          <button
+            type="submit"
+            className="border rounded-sm text-white text-sm bg-black py-2 px-4 cursor-pointer"
+          >
+            {editMode ? "Update" : "Add"}
+          </button>
+        </form>
+
+        <ul>
+          {todoList.map((todo) => (
+            <TodoItem
+              key={todo._id}
+              todo={todo}
+              editMode={editMode}
+              handleModeChange={handleModeChange}
+              handleRemoveTodo={handleRemoveTodo}
+            />
+          ))}
+        </ul>
+      </div>
+    </>
+  );
 };
 
 export default TodoList;

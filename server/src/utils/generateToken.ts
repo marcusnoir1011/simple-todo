@@ -20,8 +20,9 @@ const generateToken = (res: Response, userId: Types.ObjectId): void => {
   res.cookie("token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: "none", // none in prod
     maxAge: 1 * 24 * 60 * 60 * 1000,
+    path: "/",
   });
 };
 

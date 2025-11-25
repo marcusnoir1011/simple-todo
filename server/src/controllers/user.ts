@@ -64,6 +64,9 @@ const userLogout: RequestHandler = asyncHandler(
     res.cookie("token", null, {
       httpOnly: true,
       expires: new Date(0),
+      sameSite: "none",
+      secure: true,
+      path: "/",
     });
     res.status(200).json({
       message: "Logout successful.",

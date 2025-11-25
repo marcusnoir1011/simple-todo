@@ -1,13 +1,21 @@
+// CORE
 import { useForm, type SubmitHandler } from "react-hook-form";
 
-interface IFormInput {
-  name: string;
-  email: string;
-  password: string;
-}
+// CUSTOM
+import { registerSchema, type RegisterInput } from "../schema/register";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+interface IFormInput extends RegisterInput {}
 
 const Register = () => {
-  const { register, handleSubmit } = useForm<IFormInput>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<IFormInput>({
+    resolver: zodResolver(registerSchema),
+  });
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
     console.log(data);
@@ -25,6 +33,11 @@ const Register = () => {
             Name
           </label>
           <input type="text" id="" className="form" {...register("name")} />
+          {errors.name && (
+            <span className="text-red-600 text-sm font-medium">
+              {errors.name.message}
+            </span>
+          )}
         </div>
 
         <div>
@@ -32,6 +45,11 @@ const Register = () => {
             Email
           </label>
           <input type="email" id="" className="form" {...register("email")} />
+          {errors.email && (
+            <span className="text-red-600 text-sm font-medium">
+              {errors.email.message}
+            </span>
+          )}
         </div>
 
         <div>
@@ -47,9 +65,18 @@ const Register = () => {
             className="form"
             {...register("password")}
           />
+          {errors.password && (
+            <span className="text-red-600 text-sm font-medium">
+              {errors.password.message}
+            </span>
+          )}
         </div>
 
-        <button type="submit" className="text-white bg-black py-2 px-4 border">
+        <button
+          type="submit"
+          className="text-white bg-black py-2 px-4 border"
+          disabled={isSubmitting}
+        >
           Register
         </button>
       </form>

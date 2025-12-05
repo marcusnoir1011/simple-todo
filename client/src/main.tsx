@@ -9,6 +9,7 @@ import Main from "./layout/Main.tsx";
 import Register from "./pages/Register.tsx";
 import store from "./store.ts";
 import Login from "./pages/Login.tsx";
+import Profile from "./pages/Profile.tsx";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: <Login />,
+      },
+      {
+        path: "/profile",
+        element: <Profile />,
       },
     ],
   },

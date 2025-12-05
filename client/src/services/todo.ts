@@ -14,8 +14,13 @@ if (import.meta.env.VITE_MODE === "production") {
 
 console.log("API", API_URL);
 
-const getTodo = async (): Promise<Todo[]> => {
-    const { data } = await axios.get(`${API_URL}/allTodo`);
+const getAllTodo = async (): Promise<Todo[]> => {
+    const { data } = await axios.get(`${API_URL}/getAllTodo`);
+    return data.data;
+};
+
+const getTodo = async (id: string): Promise<Todo> => {
+    const { data } = await axios.get(`${API_URL}/get/${id}`);
     return data.data;
 };
 
@@ -34,4 +39,4 @@ const updateTodo = async (id: string, title: string) => {
     return data.data;
 };
 
-export { getTodo, createTodo, deleteTodo, updateTodo };
+export { getAllTodo, getTodo, createTodo, deleteTodo, updateTodo };

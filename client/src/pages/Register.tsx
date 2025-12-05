@@ -1,9 +1,12 @@
 // CORE
 import { useForm, type SubmitHandler } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "react-toastify";
 
 // CUSTOM
 import { registerSchema, type RegisterInput } from "../schema/register";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useRegisterMutation } from "../slices/userApiSlice";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface IFormInput extends RegisterInput {}
@@ -13,12 +16,24 @@ const Register = () => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    reset,
   } = useForm<IFormInput>({
     resolver: zodResolver(registerSchema),
   });
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    console.log(data);
+  const [registerMutation, { isLoading }] = useRegisterMutation();
+  const navigate = useNavigate();
+
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    try {
+      await registerMutation(data);
+      reset();
+      navigate("/api/auth/login");
+      toast.success("Registration Successful.");
+    } catch (err) {
+      const apiError = err as { data?: { message?: string }; error?: string };
+      toast.error(apiError.data?.message || apiError.error || "Login failed");
+    }
   };
 
   return (
@@ -75,7 +90,7 @@ const Register = () => {
         <button
           type="submit"
           className="text-white bg-black py-2 px-4 border"
-          disabled={isSubmitting}
+          disabled={isSubmitting || isLoading}
         >
           Register
         </button>

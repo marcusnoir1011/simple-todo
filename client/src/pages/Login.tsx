@@ -36,6 +36,7 @@ const Login = () => {
       if (!response) return;
 
       dispatch(setUserInfo(response));
+      toast.success("Login Successful.");
     } catch (err: unknown) {
       const apiError = err as { data?: { message?: string }; error?: string };
       toast.error(apiError.data?.message || apiError.error || "Login failed");
